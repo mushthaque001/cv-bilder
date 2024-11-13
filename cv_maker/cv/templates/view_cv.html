@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ personal_info.name }}'s CV</title>
+    <!-- Google Fonts (to include the selected fonts dynamically) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Merriweather:wght@700&family=Open+Sans:wght@400;600&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Apply the selected font style */
+        body {
+            font-family: '{{ personal_info.font_style|default:"Roboto" }}', sans-serif; /* Dynamic font or default to Roboto */
+            background-color: #e9ecef;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+            padding-top: 40px;
+        }
+
+        /* Main Heading */
+        h1 {
+            font-family: 'Merriweather', serif;
+            color: #004d61;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* CV container */
+        .cv-container {
+            width: 100%;
+            max-width: 900px;
+            background: #fff;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5em;
+        }
+
+        .header p {
+            margin: 5px 0;
+            font-size: 1.1em;
+        }
+
+        .cv-layout {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        /* Sidebar and content area styling */
+        .sidebar {
+            background-color: #f4f4f4;
+            width: 35%;
+            padding: 30px;
+            color: #333;
+        }
+
+        .content {
+            width: 65%;
+            padding: 30px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #00796b;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #00796b;
+            padding-bottom: 5px;
+        }
+
+        .entry {
+            margin-bottom: 20px;
+        }
+
+        .entry-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+
+        .entry-details {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .personal-info p {
+            margin: 5px 0;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        li {
+            font-size: 1em;
+            background: #e0f7fa;
+            color: #00796b;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 5px;
+            flex-basis: calc(50% - 10px);
+        }
+
+        /* Media Queries for responsiveness */
+        @media screen and (max-width: 768px) {
+            .cv-layout {
+                flex-direction: column;
+            }
+
+            .sidebar,
+            .content {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header img {
+                width: 120px;
+                height: 120px;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .entry-title {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cv-container">
+        <!-- Header with photo -->
+        <div class="header">
+            {% if personal_info.photo %}
+            <img src="{{ personal_info.photo.url|default_if_none:'/static/images/placeholder.png' }}" alt="Profile Photo">
+            <!-- Display the uploaded photo -->
+            {% endif %}
+            <h1>{{ personal_info.name }}</h1>
+            <!-- <p>{{ personal_info.position }}</p> -->
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'download_cv' personal_info.id %}" class="download-button" style="
+                display: inline-block;
+                padding: 10px 20px;
+                font-size: 1em;
+                color: #fff;
+                background-color: #00796b;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: background-color 0.3s;
+            " onmouseover="this.style.backgroundColor='#00574b';" onmouseout="this.style.backgroundColor='#00796b';">
+                Download CV
+            </a>
+        </div>
+
+        <!-- CV layout with sidebar and content -->
+        <div class="cv-layout">
+            <!-- Sidebar with Contact Info and Skills -->
+            <div class="sidebar">
+                <h2>Contact</h2>
+                <div class="personal-info">
+                    <p>Email: {{ personal_info.email }}</p>
+                    <p>Phone: {{ personal_info.phone }}</p>
+                    <p>Address: {{ personal_info.address }}</p>
+                </div>
+
+                <h2>Skills</h2>
+                <ul>
+                    {% for skill in skills %}
+                        <li>{{ skill.name }} - {{ skill.proficiency }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Main Content with Education and Work Experience -->
+            <div class="content">
+                <h2>Education</h2>
+                {% for edu in education %}
+                    <div class="entry">
+                        <p class="entry-title">{{ edu.degree }} at {{ edu.school_name }}</p>
+                        <p class="entry-details">{{ edu.start_date }} - {{ edu.end_date }}</p>
+                        <p>{{ edu.description }}</p>
+                    </div>
+                {% endfor %}
+
+                <h2>Work Experience</h2>
+                {% for work in work_experience %}
+                    <div class="entry">
+                        <p class="entry-title">{{ work.position }} at {{ work.company_name }}</p>
+                        <p class="entry-details">{{ work.start_date }} - {{ work.end_date }}</p>
+                        <p>{{ work.responsibilities }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

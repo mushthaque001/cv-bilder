@@ -1,0 +1,26 @@
+<!-- templates/cv/create_cv.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create CV</title>
+</head>
+<body>
+    <h1>Create Your CV</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <h2>Personal Information</h2>
+        {{ personal_form.as_p }}
+
+        <h2>Education</h2>
+        {{ education_form.as_p }}
+
+        <h2>Work Experience</h2>
+        {{ work_form.as_p }}
+
+        <h2>Skills</h2>
+        {{ skill_form.as_p }}
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

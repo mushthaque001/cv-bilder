@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ personal_info.name }}'s CV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #004d61;
+        }
+        .header, .section {
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .personal-info p, .entry {
+            margin: 5px 0;
+        }
+        .skills, .education, .work-experience {
+            list-style-type: none;
+            padding: 0;
+        }
+        .skills li, .entry {
+            background: #e0f7fa;
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with name, photo, and position -->
+        <div class="header">
+            {% if personal_info.photo %}
+                <img src="{{ personal_info.photo.url }}" alt="Profile Photo">
+            {% endif %}
+            <h1>{{ personal_info.name }}</h1>
+            <p>{{ personal_info.position }}</p>
+            <p>Email: {{ personal_info.email }} | Phone: {{ personal_info.phone }}</p>
+            <p>Address: {{ personal_info.address }}</p>
+        </div>
+
+        <!-- Skills Section -->
+        <div class="section">
+            <h2>Skills</h2>
+            <ul class="skills">
+                {% for skill in skills %}
+                    <li>{{ skill.name }} - {{ skill.proficiency }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Education Section -->
+        <div class="section">
+            <h2>Education</h2>
+            {% for edu in education %}
+                <div class="entry">
+                    <p><strong>{{ edu.degree }}</strong> at {{ edu.school_name }}</p>
+                    <p>{{ edu.start_date }} - {{ edu.end_date }}</p>
+                    <p>{{ edu.description }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Work Experience Section -->
+        <div class="section">
+            <h2>Work Experience</h2>
+            {% for work in work_experience %}
+                <div class="entry">
+                    <p><strong>{{ work.position }}</strong> at {{ work.company_name }}</p>
+                    <p>{{ work.start_date }} - {{ work.end_date }}</p>
+                    <p>{{ work.responsibilities }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
